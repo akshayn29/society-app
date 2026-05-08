@@ -20,7 +20,7 @@ export default function Footer({ appName = "SocietyApp" }) {
             <h4 className="font-display font-semibold text-white mb-4">Product</h4>
             <ul className="space-y-2 text-sm">
               {["Features", "How It Works", "Pricing", "Security"].map((l) => (
-                <li key={l}><a href={`#${l.toLowerCase().replace(/ /g, "-")}`} className="hover:text-white transition-colors">{l}</a></li>
+                <li key={l}><a href={`#${l.toLowerCase().replace(/ /g, "-")}`} className="hover:text-white transition-colors">{l}</button></li>
               ))}
             </ul>
           </div>
@@ -28,7 +28,7 @@ export default function Footer({ appName = "SocietyApp" }) {
             <h4 className="font-display font-semibold text-white mb-4">Company</h4>
             <ul className="space-y-2 text-sm">
               {["About Us", "Blog", "Careers", "Privacy Policy", "Terms of Service"].map((l) => (
-                <li key={l}><a href="#" className="hover:text-white transition-colors">{l}</a></li>
+                <li key={l}><a onClick={() => {}} className="hover:text-white transition-colors">{l}</button></li>
               ))}
             </ul>
           </div>
