@@ -3,7 +3,7 @@ import DomesticHelpTab from "../components/DomesticHelpTab";
 import ChatTab from "../components/ChatTab";
 import {
   Shield, Plus, Car, Users, Bell, LogOut, Home,
-  Calendar, ClipboardList, X, Trash2, AlertCircle, Clock, HeartHandshake, MessageCircle
+  Calendar, ClipboardList, X, Trash2, AlertCircle, AlertTriangle, Clock, HeartHandshake, MessageCircle
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -102,7 +102,10 @@ export default function OwnerDashboard() {
       showSuccess(`${selectedFacility.name} booked for ${bookingDate} · ${bookingSlot}`);
       setSelectedFacility(null); setBookingDate(""); setBookingSlot("");
     } catch (err) {
-    
+      showError(err?.message === "Slot already booked" ? "This slot is already booked. Please choose another." : "Booking failed. Try again.");
+    }
+    setSubmitting(false);
+  };
 
   const handleRaiseComplaint = async (e) => {
     e.preventDefault();
@@ -121,10 +124,7 @@ export default function OwnerDashboard() {
       setShowComplaintForm(false);
       showSuccess("Complaint raised successfully!");
     } catch (err) {
-      showError("Failed to raise complaint. Try again.");
-    }
-    setSubmitting(false);
-  };  showError(err.message === "Slot already booked" ? "This slot is already booked. Please choose another." : "Booking failed. Try again.");
+        showError("Failed to raise complaint. Try again.");
     }
     setSubmitting(false);
   };
