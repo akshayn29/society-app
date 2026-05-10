@@ -20,6 +20,7 @@ const TABS = [
   { id: "tenants",   label: "Tenants",   icon: Users },
   { id: "vehicles",  label: "Vehicles",  icon: Car },
   { id: "bookings",  label: "Bookings",  icon: Calendar },
+  { id: "complaints", label: "My Complaints", icon: AlertTriangle },
   { id: "chat",      label: "Chat",      icon: MessageCircle },
   { id: "domestic",  label: "Help",      icon: HeartHandshake },
 ];
@@ -44,6 +45,7 @@ export default function OwnerDashboard() {
   const { vehicles, loading: vehiclesLoading, addVehicle, removeVehicle } = useVehicles();
   const { facilities, myBookings, loading: facilitiesLoading, bookFacility, cancelBooking, getSlotBookings } = useFacilities();
   const { raiseComplaint } = useComplaints(userProfile?.societyCode);
+  const { complaints: myComplaints, loading: complaintsLoading } = useComplaints(userProfile?.societyCode);
 
   const [activeTab, setActiveTab] = useState("overview");
   const [submitting, setSubmitting] = useState(false);
