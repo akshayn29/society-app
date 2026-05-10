@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Clock, CheckCircle, X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useDomesticHelp } from '../hooks/useDomesticHelp';
 import { useAuth } from '../context/AuthContext';
 
