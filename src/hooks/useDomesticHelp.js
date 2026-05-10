@@ -1,69 +1,120 @@
 import { useState, useEffect } from "react";
 import { db } from "../firebase/config";
 import {
-  collection, addDoc, deleteDoc, updateDoc,
-  doc, query, where, onSnapshot, serverTimestamp
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
-import { useAuth } from "../context/AuthContext";
 
-export function useDomesticHelp() {
-  const { userProfile } = useAuth();
+export const useDomesticHelp = (societyCode) => {
   const [helpers, setHelpers] = useState([]);
+  const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const societyCode = userProfile?.societyCode;
-
   useEffect(() => {
-    if (!userProfile) return;
-    let q;
-    if (userProfile.role === "guard" || userProfile.role === "admin") {
-      q = query(collection(db, "domesticHelp"), where("societyCode", "==", societyCode));
-    } else {
-      q = query(collection(db, "domesticHelp"), where("ownerUid", "==", userProfile.uid));
-    }
-    const unsub = onSnapshot(q, (snap) => {
-      setHelpers(snap.docs.map(d => ({
-        id: d.id, ...d.data(),
-        createdAt: d.data().createdAt?.toDate?.()?.toLocaleDateString() || "—",
-      })));
+    if (!societyCode) return;
+
+    const helpQuery = query(
+      collection(db, "domesticHelp"),
+      where("societyCode", "==", societyCode)
+    );
+
+    const unsubscribeHelp = onSnapshot(helpQuery, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setHelpers(data);
       setLoading(false);
     });
-    return unsub;
-  }, [userProfile]);
 
-  async function addHelper(data) {
-    await addDoc(collection(db, "domesticHelp"), {
-      ...data,
-      ownerUid:    userProfile.uid,
-      ownerName:   userProfile.name,
-      flatNumber:  userProfile.flatNumber,
-      wing:        userProfile.wing || "",
-      societyCode: societyCode,
-      status:      "active",
-      createdAt:   serverTimestamp(),
+    const attendanceQuery = query(
+      collection(db, "domesticHelpAttendance"),
+      where("societyCode", "==", societyCode)
+    );
+
+    const unsubscribeAttendance = onSnapshot(attendanceQuery, (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setAttendance(data);
     });
-  }
 
-  async function removeHelper(id) {
-    await deleteDoc(doc(db, "domesticHelp", id));
-  }
+    return () => {
+      unsubscribeHelp();
+      unsubscribeAttendance();
+    };
+  }, [societyCode]);
 
-  async function toggleStatus(id, currentStatus) {
-    await updateDoc(doc(db, "domesticHelp", id), {
-      status: currentStatus === "active" ? "suspended" : "active",
-    });
-  }
+  const addHelper = async (helperData) => {
+    try {
+      await addDoc(collection(db, "domesticHelp"), {
+        ...helperData,
+        societyCode,
+        createdAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error adding helper:", error);
+      throw error;
+    }
+  };
 
-  function isWorkingToday(workingDays) {
-    if (!workingDays || workingDays.length === 0) return true;
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const today = days[new Date().getDay()];
-    return workingDays.includes(today);
-  }
+  const deleteHelper = async (helperId) => {
+    try {
+      await deleteDoc(doc(db, "domesticHelp", helperId));
+    } catch (error) {
+      console.error("Error deleting helper:", error);
+      throw error;
+    }
+  };
 
-  const todaysHelpers = helpers.filter(h =>
-    h.status === "active" && isWorkingToday(h.workingDays)
-  );
+  const markAttendance = async (helperId, helperName, status) => {
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      // Check if attendance already marked today
+      const existing = attendance.find(
+        (a) => a.helperId === helperId && a.date === today
+      );
+      if (existing) {
+        await updateDoc(doc(db, "domesticHelpAttendance", existing.id), {
+          status,
+          updatedAt: serverTimestamp(),
+        });
+      } else {
+        await addDoc(collection(db, "domesticHelpAttendance"), {
+          helperId,
+          helperName,
+          societyCode,
+          date: today,
+          status,
+          createdAt: serverTimestamp(),
+        });
+      }
+    } catch (error) {
+      console.error("Error marking attendance:", error);
+      throw error;
+    }
+  };
 
-  return { helpers, loading, todaysHelpers, addHelper, removeHelper, toggleStatus, isWorkingToday };
-}
+  const getTodayAttendance = (helperId) => {
+    const today = new Date().toISOString().split("T")[0];
+    return attendance.find((a) => a.helperId === helperId && a.date === today);
+  };
+
+  return {
+    helpers,
+    attendance,
+    loading,
+    addHelper,
+    deleteHelper,
+    markAttendance,
+    getTodayAttendance,
+  };
+};
