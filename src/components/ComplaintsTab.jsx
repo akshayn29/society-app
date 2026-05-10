@@ -1,3 +1,4 @@
+import { CheckCircle, Clock } from 'lucide-react';
 import { useComplaints } from '../hooks/useComplaints';
 import { useAuth } from '../context/AuthContext';
 
