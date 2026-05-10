@@ -17,13 +17,17 @@ export function useComplaints(societyCode) {
     return unsubscribe;
   }, [societyCode]);
 
-  const raiseComplaint = async (title, description, raisedByFlat) => {
+  const raiseComplaint = async (complaintData) => {
+    const { title, description, category, flatNumber, ownerName, societyCode } = complaintData;
     await addDoc(collection(db, 'complaints'), {
       societyCode,
       title,
       description,
-      raisedByFlat,
+      category,
+      raisedByFlat: flatNumber,
+      raisedByName: ownerName,
       status: 'pending',
+      createdAt: new Date(),
       timestamp: new Date()
     });
   };
