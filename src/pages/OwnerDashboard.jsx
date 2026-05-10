@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
+import DomesticHelpTab from "../components/DomesticHelpTab";
+import ChatTab from "../components/ChatTab";
 import {
   Shield, Plus, Car, Users, Bell, LogOut, Home,
-  Calendar, ClipboardList, X, Trash2, AlertCircle, Clock
+  Calendar, ClipboardList, X, Trash2, AlertCircle, Clock, HeartHandshake, MessageCircle
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +12,7 @@ import { useEntries } from "../hooks/useEntries";
 import { useTenants } from "../hooks/useTenants";
 import { useVehicles } from "../hooks/useVehicles";
 import { useFacilities } from "../hooks/useFacilities";
+import { useComplaints } from "../hooks/useComplaints";
 
 const TABS = [
   { id: "overview",  label: "Overview",  icon: Home },
@@ -16,6 +20,8 @@ const TABS = [
   { id: "tenants",   label: "Tenants",   icon: Users },
   { id: "vehicles",  label: "Vehicles",  icon: Car },
   { id: "bookings",  label: "Bookings",  icon: Calendar },
+  { id: "chat",      label: "Chat",      icon: MessageCircle },
+  { id: "domestic",  label: "Help",      icon: HeartHandshake },
 ];
 
 const TIME_SLOTS = [
@@ -25,7 +31,10 @@ const TIME_SLOTS = [
   "06:00 PM - 08:00 PM", "08:00 PM - 10:00 PM",
 ];
 
-const FACILITY_ICONS = { "Swimming Pool": "🏊", "Gym": "💪", "Banquet Hall": "🏛️", "Ground": "⚽", "Club House": "🏠", "Tennis Court": "🎾", "Other": "🏢" };
+const FACILITY_ICONS = {
+  "Swimming Pool": "🏊", "Gym": "💪", "Banquet Hall": "🏛️",
+  "Ground": "⚽", "Club House": "🏠", "Tennis Court": "🎾", "Other": "🏢"
+};
 
 export default function OwnerDashboard() {
   const navigate = useNavigate();
@@ -34,6 +43,7 @@ export default function OwnerDashboard() {
   const { tenants, loading: tenantsLoading, addTenant, removeTenant } = useTenants();
   const { vehicles, loading: vehiclesLoading, addVehicle, removeVehicle } = useVehicles();
   const { facilities, myBookings, loading: facilitiesLoading, bookFacility, cancelBooking, getSlotBookings } = useFacilities();
+  const { raiseComplaint } = useComplaints(userProfile?.societyCode);
 
   const [activeTab, setActiveTab] = useState("overview");
   const [submitting, setSubmitting] = useState(false);
@@ -43,6 +53,8 @@ export default function OwnerDashboard() {
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [bookingDate, setBookingDate] = useState("");
   const [bookingSlot, setBookingSlot] = useState("");
+  const [showComplaintForm, setShowComplaintForm] = useState(false);
+  const [complaintForm, setComplaintForm] = useState({ title: "", description: "" });
 
   const [visitorForm, setVisitorForm] = useState({ visitorName: "", visitorPhone: "", purpose: "", expectedTime: "" });
   const [tenantForm, setTenantForm]   = useState({ name: "", email: "", phone: "", expiryDate: "" });
@@ -87,13 +99,29 @@ export default function OwnerDashboard() {
       showSuccess(`${selectedFacility.name} booked for ${bookingDate} · ${bookingSlot}`);
       setSelectedFacility(null); setBookingDate(""); setBookingSlot("");
     } catch (err) {
-      showError(err.message === "Slot already booked" ? "This slot is already booked. Please choose another." : "Booking failed. Try again.");
+    
+
+  const handleRaiseComplaint = async (e) => {
+    e.preventDefault();
+    if (!complaintForm.title || !complaintForm.description) return;
+    setSubmitting(true);
+    try {
+      await raiseComplaint(complaintForm.title, complaintForm.description, userProfile?.flatNumber);
+      setComplaintForm({ title: "", description: "" });
+      setShowComplaintForm(false);
+      showSuccess("Complaint raised successfully!");
+    } catch (err) {
+      showError("Failed to raise complaint. Try again.");
+    }
+    setSubmitting(false);
+  };  showError(err.message === "Slot already booked" ? "This slot is already booked. Please choose another." : "Booking failed. Try again.");
     }
     setSubmitting(false);
   };
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {/* HEADER */}
       <header className="bg-white border-b border-slate-100 px-4 py-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center">
@@ -110,6 +138,7 @@ export default function OwnerDashboard() {
         </div>
       </header>
 
+      {/* TABS */}
       <div className="bg-white border-b border-slate-100 px-4 overflow-x-auto">
         <div className="flex gap-1 min-w-max">
           {TABS.map((t) => { const Icon = t.icon; return (
@@ -132,25 +161,30 @@ export default function OwnerDashboard() {
             <div className="card"><h3 className="font-display font-bold text-slate-900">Welcome, {userProfile?.name}! 👋</h3><p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} · {userProfile?.societyCode}</p></div>
             <div className="grid grid-cols-4 gap-3">
               {[
-                { label: "Visitors", value: entries.length,  color: "bg-blue-50 text-blue-600" },
-                { label: "Tenants",  value: tenants.length,  color: "bg-purple-50 text-purple-600" },
-                { label: "Vehicles", value: vehicles.length, color: "bg-orange-50 text-orange-600" },
-                { label: "Bookings", value: myBookings.length, color: "bg-green-50 text-green-600" },
-              ].map((s) => (
-                <div key={s.label} className={`card text-center py-3 ${s.color}`}>
-                  <div className="font-display font-bold text-2xl">{s.value}</div>
-                  <div className="text-xs font-semibold mt-1">{s.label}</div>
-                </div>
+                { label: "Visitors", value: entries.length,    color: "bg-blue-50 text-blue-600" },
+                { label: "Tenants",  value: tenants.length,    color: "bg-purple-50 text-purple-600" },
+                { label: "Raise Complaint", emoji: "📢", action: () => setShowComplaintForm(true) },
+                { label: "Chat with Admin", emoji: "💬", tab: "chat" },
+                { label: "Domestic Help",  emoji: "🧹", tab: "domestic" },
+              ].map((a) => (
+                <button key={a.label} onClick={a.tab ? () => { setActiveTab(a.tab); setShowForm(false); } : a.action}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-primary-50 transition-all text-left card">
+                  <span className="text-2xl">{a.emoji}</span>
+                  <span className="text-sm font-medium text-slate-700">{a.label}</span>
+                </button>
               ))}
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Add Visitor",   emoji: "👤", tab: "visitors" },
-                { label: "Add Tenant",    emoji: "🏠", tab: "tenants" },
-                { label: "Add Vehicle",   emoji: "🚗", tab: "vehicles" },
-                { label: "Book Facility", emoji: "🏊", tab: "bookings" },
+                { label: "Add Visitor",    emoji: "👤", tab: "visitors" },
+                { label: "Add Tenant",     emoji: "🏠", tab: "tenants" },
+                { label: "Add Vehicle",    emoji: "🚗", tab: "vehicles" },
+                { label: "Book Facility",  emoji: "🏊", tab: "bookings" },
+                { label: "Raise Complaint", emoji: "📢", action: () => setShowComplaintForm(true) },
+                { label: "Chat with Admin", emoji: "💬", tab: "chat" },
+                { label: "Domestic Help",  emoji: "🧹", tab: "domestic" },
               ].map((a) => (
-                <button key={a.label} onClick={() => { setActiveTab(a.tab); setShowForm(true); }}
+                <button key={a.label} onClick={a.tab ? () => { setActiveTab(a.tab); setShowForm(false); } : a.action}
                   className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-primary-50 transition-all text-left card">
                   <span className="text-2xl">{a.emoji}</span>
                   <span className="text-sm font-medium text-slate-700">{a.label}</span>
@@ -294,13 +328,11 @@ export default function OwnerDashboard() {
         {activeTab === "bookings" && (
           <div className="space-y-4">
             <h3 className="font-display font-bold text-xl text-slate-900">Facility Booking</h3>
-
             {facilitiesLoading ? <div className="card text-center py-8 text-slate-400">Loading facilities...</div> :
              facilities.length === 0 ? (
               <div className="card text-center py-12"><div className="text-4xl mb-2">🏊</div><p className="text-slate-500">No facilities added by admin yet.</p></div>
             ) : (
               <>
-                {/* Facility Selection */}
                 <div className="card">
                   <h4 className="font-display font-semibold text-slate-900 mb-3">Select Facility</h4>
                   <div className="grid grid-cols-2 gap-3">
@@ -315,8 +347,6 @@ export default function OwnerDashboard() {
                     ))}
                   </div>
                 </div>
-
-                {/* Date & Slot Selection */}
                 {selectedFacility && (
                   <div className="card border-2 border-primary-100">
                     <h4 className="font-display font-semibold text-slate-900 mb-4">
@@ -359,8 +389,6 @@ export default function OwnerDashboard() {
                     </div>
                   </div>
                 )}
-
-                {/* My Bookings */}
                 {myBookings.length > 0 && (
                   <div>
                     <h4 className="font-display font-semibold text-slate-900 mb-3">My Bookings ({myBookings.length})</h4>
@@ -384,8 +412,16 @@ export default function OwnerDashboard() {
             )}
           </div>
         )}
+
+        {/* DOMESTIC HELP */}
+        {activeTab === "domestic" && (
+          <DomesticHelpTab
+            societyCode={userProfile?.societyCode}
+            flatNumber={userProfile?.flatNumber}
+          />
+        )}
+
       </main>
     </div>
   );
 }
-
