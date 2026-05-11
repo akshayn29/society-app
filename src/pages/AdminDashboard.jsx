@@ -296,6 +296,7 @@ export default function AdminDashboard() {
           )}
 
           {/* MEMBERS */}
+          {activeTab === "complaints" && <ComplaintsTab />}
           {activeTab === "members" && (
             <div className="card text-center py-16">
               <div className="text-5xl mb-4">👥</div>

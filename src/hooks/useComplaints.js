@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase/config';
-import { collection, addDoc, onSnapshot, query, orderBy, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, where, updateDoc, doc } from 'firebase/firestore';
 
 export function useComplaints(societyCode) {
   const [complaints, setComplaints] = useState([]);
@@ -8,7 +8,7 @@ export function useComplaints(societyCode) {
 
   useEffect(() => {
     if (!societyCode) return;
-    const q = query(collection(db, 'complaints'), where('societyCode', '==', societyCode), orderBy('timestamp', 'desc'));
+    const q = query(collection(db, 'complaints'), where('societyCode', '==', societyCode));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setComplaints(data);
