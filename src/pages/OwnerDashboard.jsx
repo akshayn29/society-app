@@ -108,27 +108,7 @@ export default function OwnerDashboard() {
     setSubmitting(false);
   };
 
-  const handleRaiseComplaint = async (e) => {
-    e.preventDefault();
-    if (!complaintForm.title || !complaintForm.description || !complaintForm.category) return;
-    setSubmitting(true);
-    try {
-      await raiseComplaint({
-        title: complaintForm.title,
-        description: complaintForm.description,
-        category: complaintForm.category,
-        flatNumber: userProfile?.flatNumber,
-        ownerName: userProfile?.name,
-        societyCode: userProfile?.societyCode
-      });
-      setComplaintForm({ title: "", description: "", category: "" });
-      setShowComplaintForm(false);
-      showSuccess("Complaint raised successfully!");
-    } catch (err) {
-        showError("Failed to raise complaint. Try again.");
-    }
-    setSubmitting(false);
-  };
+
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -491,4 +471,5 @@ export default function OwnerDashboard() {
     </div>
   );
 }
+
 
