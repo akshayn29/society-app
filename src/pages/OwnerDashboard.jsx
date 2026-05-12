@@ -415,61 +415,9 @@ export default function OwnerDashboard() {
           />
         )}
 
-      </main>
-
-      {/* COMPLAINT MODAL */}
-      {showComplaintForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-display font-bold text-xl text-slate-900">Raise Complaint</h3>
-                <button onClick={() => setShowComplaintForm(false)} className="p-2 hover:bg-slate-100 rounded-lg">
-                  <X className="w-5 h-5 text-slate-400" />
-                </button>
-              </div>
-              <form onSubmit={handleRaiseComplaint} className="space-y-4">
-                <input
-                  type="text"
-                  placeholder="Complaint Title *"
-                  required
-                  value={complaintForm.title}
-                  onChange={(e) => setComplaintForm({ ...complaintForm, title: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 placeholder-slate-400"
-                />
-                <textarea
-                  placeholder="Describe your complaint in detail *"
-                  required
-                  value={complaintForm.description}
-                  onChange={(e) => setComplaintForm({ ...complaintForm, description: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 placeholder-slate-400 h-32 resize-none"
-                />
-                <select
-                  required
-                  value={complaintForm.category}
-                  onChange={(e) => setComplaintForm({ ...complaintForm, category: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 bg-white"
-                >
-                  <option value="">Select Category *</option>
-                  <option value="maintenance">Maintenance</option>
-                  <option value="security">Security</option>
-                  <option value="cleanliness">Cleanliness</option>
-                  <option value="noise">Noise</option>
-                  <option value="parking">Parking</option>
-                  <option value="facilities">Facilities</option>
-                  <option value="other">Other</option>
-                </select>
-                <button type="submit" disabled={submitting} className="w-full btn-primary flex items-center justify-center gap-2">
-                  {submitting ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><AlertTriangle className="w-4 h-4" />Submit Complaint</>}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
+
 
 
