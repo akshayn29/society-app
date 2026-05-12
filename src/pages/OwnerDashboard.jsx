@@ -7,12 +7,13 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NotificationBell from "../components/NotificationBell";
 import { useAuth } from "../context/AuthContext";
 import { useEntries } from "../hooks/useEntries";
 import { useTenants } from "../hooks/useTenants";
 import { useVehicles } from "../hooks/useVehicles";
 import { useFacilities } from "../hooks/useFacilities";
-import { useComplaints } from "../hooks/useComplaints";
+import ComplaintsTab from "../components/ComplaintsTab";
 
 const TABS = [
   { id: "overview",  label: "Overview",  icon: Home },
@@ -44,9 +45,9 @@ export default function OwnerDashboard() {
   const { tenants, loading: tenantsLoading, addTenant, removeTenant } = useTenants();
   const { vehicles, loading: vehiclesLoading, addVehicle, removeVehicle } = useVehicles();
   const { facilities, myBookings, loading: facilitiesLoading, bookFacility, cancelBooking, getSlotBookings } = useFacilities();
-  const { raiseComplaint } = useComplaints(userProfile?.societyCode);
-  const { complaints: allComplaints, loading: complaintsLoading } = useComplaints(userProfile?.societyCode);
-  const myComplaints = allComplaints.filter(c => c.raisedByFlat === userProfile?.flatNumber);
+
+
+
 
   const [activeTab, setActiveTab] = useState("overview");
   const [submitting, setSubmitting] = useState(false);
@@ -143,7 +144,7 @@ export default function OwnerDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button className="relative p-2 rounded-xl hover:bg-slate-100"><Bell className="w-5 h-5 text-slate-600" /></button>
+          <NotificationBell />
           <button onClick={handleLogout} className="p-2 rounded-xl hover:bg-slate-100"><LogOut className="w-5 h-5 text-slate-600" /></button>
         </div>
       </header>
@@ -424,63 +425,9 @@ export default function OwnerDashboard() {
         )}
 
         {/* COMPLAINTS */}
-        {activeTab === "complaints" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-display font-bold text-xl text-slate-900">My Complaints</h3>
-              <button onClick={() => setShowComplaintForm(true)} className="btn-primary py-2 px-4 text-sm flex items-center gap-2">
-                <Plus className="w-4 h-4" />Raise Complaint
-              </button>
-            </div>
-            {complaintsLoading ? (
-              <div className="card text-center py-8 text-slate-400">Loading complaints...</div>
-            ) : myComplaints.length === 0 ? (
-              <div className="card text-center py-12">
-                <div className="text-4xl mb-2">📢</div>
-                <p className="text-slate-500">No complaints raised yet.</p>
-                <button onClick={() => setShowComplaintForm(true)} className="btn-primary mt-4">Raise Your First Complaint</button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {myComplaints.map((complaint) => (
-                  <div key={complaint.id} className="card">
-                    <div className="flex items-start gap-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 ${
-                        complaint.status === "resolved" ? "bg-green-500" :
-                        complaint.status === "in-progress" ? "bg-yellow-500" : "bg-red-500"
-                      }`}>
-                        {complaint.status === "resolved" ? "✓" :
-                         complaint.status === "in-progress" ? "⏳" : "⚠"}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-slate-900">{complaint.title}</div>
-                        <div className="text-sm text-slate-600 mt-1">{complaint.description}</div>
-                        <div className="text-xs text-slate-400 mt-2">
-                          Raised on {new Date(complaint.createdAt?.toDate?.() || complaint.createdAt).toLocaleDateString()}
-                          {complaint.updatedAt && ` · Updated ${new Date(complaint.updatedAt?.toDate?.() || complaint.updatedAt).toLocaleDateString()}`}
-                        </div>
-                        <div className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-2 ${
-                          complaint.status === "resolved" ? "bg-green-100 text-green-700" :
-                          complaint.status === "in-progress" ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"
-                        }`}>
-                          {complaint.status === "resolved" ? "Resolved" :
-                           complaint.status === "in-progress" ? "In Progress" : "Pending"}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {activeTab === "complaints" && <ComplaintsTab />}
 
-        {/* CHAT */}
-        {activeTab === "chat" && (
-          <ChatTab societyCode={userProfile?.societyCode} />
-        )}
-
-        {/* DOMESTIC HELP */}
+                {/* DOMESTIC HELP */}
         {activeTab === "domestic" && (
           <DomesticHelpTab
             societyCode={userProfile?.societyCode}
@@ -544,3 +491,4 @@ export default function OwnerDashboard() {
     </div>
   );
 }
+

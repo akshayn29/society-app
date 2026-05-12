@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import NotificationBell from "../components/NotificationBell";
 import { useAuth } from "../context/AuthContext";
 import { useEntries } from "../hooks/useEntries";
 import { useFacilities } from "../hooks/useFacilities";
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <button className="relative p-2 rounded-xl hover:bg-slate-100">
-            <Bell className="w-5 h-5 text-slate-600" />
+            <NotificationBell />
             {entries.filter(e => e.status === "pending").length > 0 && (
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             )}
