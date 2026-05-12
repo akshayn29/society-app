@@ -149,7 +149,7 @@ export default function OwnerDashboard() {
         {/* OVERVIEW */}
         {activeTab === "overview" && (
           <>
-            <div className="card"><h3 className="font-display font-bold text-slate-900">Welcome, {userProfile?.name}! 👋</h3><p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} · {userProfile?.societyCode}</p></div>
+            {activeTab === "overview" && (<>`n<div className="card"><h3 className="font-display font-bold text-slate-900">Welcome, {userProfile?.name}! 👋</h3><p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} · {userProfile?.societyCode}</p></div>
             <div className="grid grid-cols-4 gap-3">
               {[
                 { label: "Visitors", value: entries.length,    color: "bg-blue-50 text-blue-600" },
@@ -324,7 +324,7 @@ export default function OwnerDashboard() {
               <div className="card text-center py-12"><div className="text-4xl mb-2">🏊</div><p className="text-slate-500">No facilities added by admin yet.</p></div>
             ) : (
               <>
-                <div className="card">
+                {activeTab === "overview" && (<>`n<div className="card">
                   <h4 className="font-display font-semibold text-slate-900 mb-3">Select Facility</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {facilities.map((f) => (
