@@ -413,11 +413,7 @@ export default function OwnerDashboard() {
             societyCode={userProfile?.societyCode}
             flatNumber={userProfile?.flatNumber}
           />
-        )}
-
+      </main>
     </div>
   );
 }
-
-
-
