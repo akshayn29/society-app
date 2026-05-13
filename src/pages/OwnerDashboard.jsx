@@ -1,29 +1,30 @@
 /* eslint-disable no-unused-vars */
 import DomesticHelpTab from "../components/DomesticHelpTab";
-import ChatTab from "../components/ChatTab";
+import ChatsTab from "../components/ChatsTab";
+import ComplaintsTab from "../components/ComplaintsTab";
+import SocietyMembersTab from "../components/SocietyMembersTab";
 import {
   Shield, Plus, Car, Users, Bell, LogOut, Home,
-  Calendar, ClipboardList, X, Trash2, AlertCircle, AlertTriangle, Clock, HeartHandshake, MessageCircle
+  Calendar, ClipboardList, X, Trash2, AlertCircle, Clock,
+  HeartHandshake, MessageCircle
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NotificationBell from "../components/NotificationBell";
 import { useAuth } from "../context/AuthContext";
 import { useEntries } from "../hooks/useEntries";
 import { useTenants } from "../hooks/useTenants";
 import { useVehicles } from "../hooks/useVehicles";
 import { useFacilities } from "../hooks/useFacilities";
-import ComplaintsTab from "../components/ComplaintsTab";
 
 const TABS = [
-  { id: "overview",  label: "Overview",  icon: Home },
-  { id: "visitors",  label: "Visitors",  icon: ClipboardList },
-  { id: "tenants",   label: "Tenants",   icon: Users },
-  { id: "vehicles",  label: "Vehicles",  icon: Car },
-  { id: "bookings",  label: "Bookings",  icon: Calendar },
-  { id: "complaints", label: "My Complaints", icon: AlertTriangle },
-  { id: "chat",      label: "Chat",      icon: MessageCircle },
-  { id: "domestic",  label: "Help",      icon: HeartHandshake },
+  { id: "overview",   label: "Overview",    icon: Home },
+  { id: "visitors",   label: "Visitors",    icon: ClipboardList },
+  { id: "tenants",    label: "Tenants",     icon: Users },
+  { id: "vehicles",   label: "Vehicles",    icon: Car },
+  { id: "bookings",   label: "Bookings",    icon: Calendar },
+  { id: "complaints", label: "Complaints",  icon: AlertCircle },
+  { id: "members",    label: "Members",     icon: MessageCircle },
+  { id: "domestic",   label: "Help",        icon: HeartHandshake },
 ];
 
 const TIME_SLOTS = [
@@ -46,19 +47,14 @@ export default function OwnerDashboard() {
   const { vehicles, loading: vehiclesLoading, addVehicle, removeVehicle } = useVehicles();
   const { facilities, myBookings, loading: facilitiesLoading, bookFacility, cancelBooking, getSlotBookings } = useFacilities();
 
-
-
-
-  const [activeTab, setActiveTab] = useState("overview");
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
-  const [showForm, setShowForm] = useState(false);
+  const [activeTab, setActiveTab]           = useState("overview");
+  const [submitting, setSubmitting]         = useState(false);
+  const [success, setSuccess]               = useState("");
+  const [error, setError]                   = useState("");
+  const [showForm, setShowForm]             = useState(false);
   const [selectedFacility, setSelectedFacility] = useState(null);
-  const [bookingDate, setBookingDate] = useState("");
-  const [bookingSlot, setBookingSlot] = useState("");
-  const [showComplaintForm, setShowComplaintForm] = useState(false);
-  const [complaintForm, setComplaintForm] = useState({ title: "", description: "", category: "" });
+  const [bookingDate, setBookingDate]       = useState("");
+  const [bookingSlot, setBookingSlot]       = useState("");
 
   const [visitorForm, setVisitorForm] = useState({ visitorName: "", visitorPhone: "", purpose: "", expectedTime: "" });
   const [tenantForm, setTenantForm]   = useState({ name: "", email: "", phone: "", expiryDate: "" });
@@ -72,24 +68,21 @@ export default function OwnerDashboard() {
   const today = new Date().toISOString().split("T")[0];
 
   const handleAddVisitor = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+    e.preventDefault(); setSubmitting(true);
     try { await addVisitor(visitorForm); setVisitorForm({ visitorName: "", visitorPhone: "", purpose: "", expectedTime: "" }); setShowForm(false); showSuccess("Visitor pre-approved!"); }
     catch (err) { console.error(err); }
     setSubmitting(false);
   };
 
   const handleAddTenant = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+    e.preventDefault(); setSubmitting(true);
     try { await addTenant(tenantForm); setTenantForm({ name: "", email: "", phone: "", expiryDate: "" }); setShowForm(false); showSuccess("Tenant added!"); }
     catch (err) { console.error(err); }
     setSubmitting(false);
   };
 
   const handleAddVehicle = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
+    e.preventDefault(); setSubmitting(true);
     try { await addVehicle({ ...vehicleForm, numberPlate: vehicleForm.numberPlate.toUpperCase().replace(/\s/g, "") }); setVehicleForm({ numberPlate: "", type: "", model: "", color: "" }); setShowForm(false); showSuccess("Vehicle registered!"); }
     catch (err) { console.error(err); }
     setSubmitting(false);
@@ -108,10 +101,9 @@ export default function OwnerDashboard() {
     setSubmitting(false);
   };
 
-
-
   return (
     <div className="min-h-screen bg-slate-50">
+
       {/* HEADER */}
       <header className="bg-white border-b border-slate-100 px-4 py-4 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-3">
@@ -124,7 +116,7 @@ export default function OwnerDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <NotificationBell />
+          <button className="relative p-2 rounded-xl hover:bg-slate-100"><Bell className="w-5 h-5 text-slate-600" /></button>
           <button onClick={handleLogout} className="p-2 rounded-xl hover:bg-slate-100"><LogOut className="w-5 h-5 text-slate-600" /></button>
         </div>
       </header>
@@ -148,41 +140,43 @@ export default function OwnerDashboard() {
 
         {/* OVERVIEW */}
         {activeTab === "overview" && (
-          <>
-            {activeTab === "overview" && (<>`n<div className="card"><h3 className="font-display font-bold text-slate-900">Welcome, {userProfile?.name}! 👋</h3><p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} · {userProfile?.societyCode}</p></div>
-            <div className="grid grid-cols-4 gap-3">
+          <div className="space-y-4">
+            <div className="card">
+              <h3 className="font-display font-bold text-slate-900">Welcome, {userProfile?.name}! 👋</h3>
+              <p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} · {userProfile?.societyCode}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Visitors", value: entries.length,    color: "bg-blue-50 text-blue-600" },
-                { label: "Tenants",  value: tenants.length,    color: "bg-purple-50 text-purple-600" },
-                { label: "Raise Complaint", emoji: "📢", action: () => setShowComplaintForm(true) },
-                { label: "Chat with Admin", emoji: "💬", tab: "chat" },
-                { label: "Domestic Help",  emoji: "🧹", tab: "domestic" },
-              ].map((a) => (
-                <button key={a.label} onClick={a.tab ? () => { setActiveTab(a.tab); setShowForm(false); } : a.action}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-primary-50 transition-all text-left card">
-                  <span className="text-2xl">{a.emoji}</span>
-                  <span className="text-sm font-medium text-slate-700">{a.label}</span>
-                </button>
+                { label: "Visitors",       value: entries.length,    color: "bg-blue-50 text-blue-600",     emoji: "👤" },
+                { label: "Tenants",        value: tenants.length,    color: "bg-purple-50 text-purple-600", emoji: "🏠" },
+                { label: "Vehicles",       value: vehicles.length,   color: "bg-orange-50 text-orange-600", emoji: "🚗" },
+                { label: "Bookings",       value: myBookings.length, color: "bg-green-50 text-green-600",   emoji: "📅" },
+              ].map((s) => (
+                <div key={s.label} className={`card text-center py-4 ${s.color}`}>
+                  <div className="text-2xl mb-1">{s.emoji}</div>
+                  <div className="font-display font-bold text-2xl">{s.value}</div>
+                  <div className="text-xs font-semibold mt-1">{s.label}</div>
+                </div>
               ))}
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Add Visitor",    emoji: "👤", tab: "visitors" },
-                { label: "Add Tenant",     emoji: "🏠", tab: "tenants" },
-                { label: "Add Vehicle",    emoji: "🚗", tab: "vehicles" },
-                { label: "Book Facility",  emoji: "🏊", tab: "bookings" },
-                { label: "Raise Complaint", emoji: "📢", action: () => setShowComplaintForm(true) },
-                { label: "Chat with Admin", emoji: "💬", tab: "chat" },
-                { label: "Domestic Help",  emoji: "🧹", tab: "domestic" },
+                { label: "Add Visitor",     emoji: "👤", tab: "visitors" },
+                { label: "Add Tenant",      emoji: "🏠", tab: "tenants" },
+                { label: "Add Vehicle",     emoji: "🚗", tab: "vehicles" },
+                { label: "Book Facility",   emoji: "🏊", tab: "bookings" },
+                { label: "Raise Complaint", emoji: "📢", tab: "complaints" },
+                { label: "Chat Members",    emoji: "💬", tab: "members" },
+                { label: "Domestic Help",   emoji: "🧹", tab: "domestic" },
               ].map((a) => (
-                <button key={a.label} onClick={a.tab ? () => { setActiveTab(a.tab); setShowForm(false); } : a.action}
+                <button key={a.label} onClick={() => { setActiveTab(a.tab); setShowForm(false); }}
                   className="flex items-center gap-3 p-4 rounded-xl bg-slate-50 hover:bg-primary-50 transition-all text-left card">
                   <span className="text-2xl">{a.emoji}</span>
                   <span className="text-sm font-medium text-slate-700">{a.label}</span>
                 </button>
               ))}
             </div>
-          </>
+          </div>
         )}
 
         {/* VISITORS */}
@@ -216,7 +210,7 @@ export default function OwnerDashboard() {
                 <div key={e.id} className="card">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">{e.visitorName?.[0] || "?"}</div>
-                    <div className="flex-1"><div className="font-semibold text-slate-900">{e.visitorName}</div><div className="text-sm text-slate-500">{e.purpose} · {e.createdAt}</div></div>
+                    <div className="flex-1"><div className="font-semibold text-slate-900">{e.visitorName}</div><div className="text-sm text-slate-500">{e.purpose}</div></div>
                     <span className={`badge text-xs ${statusColor(e.status)}`}>{e.status}</span>
                   </div>
                 </div>
@@ -240,8 +234,10 @@ export default function OwnerDashboard() {
                   <input type="text" placeholder="Tenant Full Name *" required value={tenantForm.name} onChange={(e) => setTenantForm({ ...tenantForm, name: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 placeholder-slate-400" />
                   <input type="email" placeholder="Tenant Email" value={tenantForm.email} onChange={(e) => setTenantForm({ ...tenantForm, email: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 placeholder-slate-400" />
                   <input type="tel" placeholder="Tenant Phone *" required value={tenantForm.phone} onChange={(e) => setTenantForm({ ...tenantForm, phone: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 placeholder-slate-400" />
-                  <div><label className="block text-sm font-semibold text-slate-700 mb-1.5">Lease Expiry Date *</label>
-                  <input type="date" required value={tenantForm.expiryDate} onChange={(e) => setTenantForm({ ...tenantForm, expiryDate: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800" /></div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-1.5">Lease Expiry Date *</label>
+                    <input type="date" required value={tenantForm.expiryDate} onChange={(e) => setTenantForm({ ...tenantForm, expiryDate: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800" />
+                  </div>
                   <button type="submit" disabled={submitting} className="w-full btn-primary flex items-center justify-center gap-2">
                     {submitting ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Plus className="w-4 h-4" />Add Tenant</>}
                   </button>
@@ -258,7 +254,8 @@ export default function OwnerDashboard() {
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">{t.name?.[0] || "?"}</div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-2 flex-wrap"><span className="font-semibold text-slate-900">{t.name}</span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-slate-900">{t.name}</span>
                           {expired ? <span className="badge bg-red-100 text-red-700 text-xs">Expired</span> : <span className="badge bg-green-100 text-green-700 text-xs">Active</span>}
                         </div>
                         <div className="text-sm text-slate-500">📞 {t.phone}</div>
@@ -323,8 +320,8 @@ export default function OwnerDashboard() {
              facilities.length === 0 ? (
               <div className="card text-center py-12"><div className="text-4xl mb-2">🏊</div><p className="text-slate-500">No facilities added by admin yet.</p></div>
             ) : (
-              <>
-                {activeTab === "overview" && (<>`n<div className="card">
+              <div className="space-y-4">
+                <div className="card">
                   <h4 className="font-display font-semibold text-slate-900 mb-3">Select Facility</h4>
                   <div className="grid grid-cols-2 gap-3">
                     {facilities.map((f) => (
@@ -340,9 +337,7 @@ export default function OwnerDashboard() {
                 </div>
                 {selectedFacility && (
                   <div className="card border-2 border-primary-100">
-                    <h4 className="font-display font-semibold text-slate-900 mb-4">
-                      Book {selectedFacility.name} {FACILITY_ICONS[selectedFacility.name] || "🏢"}
-                    </h4>
+                    <h4 className="font-display font-semibold text-slate-900 mb-4">Book {selectedFacility.name} {FACILITY_ICONS[selectedFacility.name] || "🏢"}</h4>
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1.5">Select Date</label>
@@ -399,7 +394,7 @@ export default function OwnerDashboard() {
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
         )}
@@ -407,14 +402,17 @@ export default function OwnerDashboard() {
         {/* COMPLAINTS */}
         {activeTab === "complaints" && <ComplaintsTab />}
 
-                {/* DOMESTIC HELP */}
+        {/* MEMBERS */}
+        {activeTab === "members" && <SocietyMembersTab />}
+
+        {/* DOMESTIC HELP */}
         {activeTab === "domestic" && (
           <DomesticHelpTab
             societyCode={userProfile?.societyCode}
             flatNumber={userProfile?.flatNumber}
           />
+        )}
       </main>
     </div>
   );
 }
-
