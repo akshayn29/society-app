@@ -2,7 +2,7 @@
 import DomesticHelpTab from "../components/DomesticHelpTab";
 import ChatsTab from "../components/ChatsTab";
 import ComplaintsTab from "../components/ComplaintsTab";
-import SocietyMembersTab from "../components/SocietyMembersTab";
+import SocietyMembersTab from "../components/ChatsTab";
 import {
   Shield, Plus, Car, Users, Bell, LogOut, Home,
   Calendar, ClipboardList, X, Trash2, AlertCircle, Clock,
