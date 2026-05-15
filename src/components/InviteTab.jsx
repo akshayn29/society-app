@@ -30,7 +30,7 @@ export default function InviteTab({ inviteRole }) {
     setSubmitting(true);
     setError("");
     try {
-      const { id, token } = await createInvite({
+      const { token } = await createInvite({
         email: form.email,
         flatNumber: form.flatNumber.toUpperCase(),
         role: inviteRole,

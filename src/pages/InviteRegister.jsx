@@ -7,7 +7,7 @@ import { collection, query, where, getDocs, updateDoc, doc } from "firebase/fire
 
 export default function InviteRegister() {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const _navigate = useNavigate();
   const { register } = useAuth();
   const token = searchParams.get("token");
 

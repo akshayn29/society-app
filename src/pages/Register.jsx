@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, Eye, EyeOff, ArrowRight, ArrowLeft, Check, Building2 } from "lucide-react";
+import { Shield, Eye, EyeOff, ArrowRight, Check, Building2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
