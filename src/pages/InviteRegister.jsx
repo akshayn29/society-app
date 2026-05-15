@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate, Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { Shield, Eye, EyeOff, ArrowRight, Check, AlertCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase/config";
@@ -7,7 +7,6 @@ import { collection, query, where, getDocs, updateDoc, doc } from "firebase/fire
 
 export default function InviteRegister() {
   const [searchParams] = useSearchParams();
-  const _navigate = useNavigate();
   const { register } = useAuth();
   const token = searchParams.get("token");
 
