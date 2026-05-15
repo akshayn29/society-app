@@ -10,6 +10,7 @@ import { useAuth } from "../context/AuthContext";
 import { useEntries } from "../hooks/useEntries";
 import { useFacilities } from "../hooks/useFacilities";
 import ChatsTab from "../components/ChatsTab";
+import InviteTab from "../components/InviteTab";
 import ComplaintsTab from "../components/ComplaintsTab";
 
 const FACILITY_ICONS = {
@@ -297,14 +298,7 @@ export default function AdminDashboard() {
           )}
 
           {/* MEMBERS */}
-          {activeTab === "complaints" && <ComplaintsTab />}
-          {activeTab === "members" && (
-            <div className="card text-center py-16">
-              <div className="text-5xl mb-4">👥</div>
-              <h3 className="font-display font-bold text-xl text-slate-900 mb-2">Member Management</h3>
-              <p className="text-slate-500">Coming in Phase 7!</p>
-            </div>
-          )}
+          {activeTab === "members" && <InviteTab inviteRole="owner" />}
         </main>
       </div>
     </div>

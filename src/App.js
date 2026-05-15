@@ -8,6 +8,7 @@ import Pricing from "./components/Pricing";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import InviteRegister from "./pages/InviteRegister";
 import AdminDashboard from "./pages/AdminDashboard";
 import GuardDashboard from "./pages/GuardDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
@@ -34,10 +35,10 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route path="/"         element={<LandingPage />} />
-          <Route path="/login"    element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
+          <Route path="/invite" element={<InviteRegister />} />
           <Route path="/super-admin" element={
             <ProtectedRoute allowedRoles={["superadmin"]}>
               <SuperAdminDashboard />
@@ -64,7 +65,7 @@ function App() {
             </ProtectedRoute>
           } />
           <Route path="/unauthorized" element={
-            <div className="min-h-screen hero-pattern flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center">
               <div className="card text-center py-16 max-w-md">
                 <div className="text-5xl mb-4">🚫</div>
                 <h2 className="font-display font-bold text-2xl text-slate-900 mb-2">Access Denied</h2>
