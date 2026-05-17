@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { db } from "../firebase/config";
 import {
   collection, addDoc, updateDoc, doc, onSnapshot,
-  query, where, serverTimestamp, getDocs
+  query, where, serverTimestamp, getDocs, deleteDoc
 } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 
@@ -12,7 +12,6 @@ export function useInvites() {
   const [pendingApprovals, setPendingApprovals] = useState([]);
   const [loading, setLoading]                   = useState(true);
 
-  // Invites sent by this user
   useEffect(() => {
     if (!userProfile?.uid) return;
     const q = query(
@@ -26,7 +25,6 @@ export function useInvites() {
     return unsub;
   }, [userProfile]);
 
-  // Users pending approval by this user
   useEffect(() => {
     if (!userProfile?.uid) return;
     const q = query(
@@ -88,8 +86,22 @@ export function useInvites() {
     });
   }
 
+  async function deleteInvite(inviteId) {
+    await deleteDoc(doc(db, "invites", inviteId));
+  }
+
+  async function deactivateInvite(inviteId, comment) {
+    await updateDoc(doc(db, "invites", inviteId), {
+      status: "inactive",
+      deactivatedAt: serverTimestamp(),
+      deactivationComment: comment,
+    });
+  }
+
   return {
     invites, pendingApprovals, loading,
-    createInvite, approveUser, rejectUser, getInviteByToken, acceptInvite,
+    createInvite, approveUser, rejectUser,
+    getInviteByToken, acceptInvite,
+    deleteInvite, deactivateInvite,
   };
 }

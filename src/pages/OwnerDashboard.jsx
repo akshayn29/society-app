@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+﻿/* eslint-disable no-unused-vars */
 import DomesticHelpTab from "../components/DomesticHelpTab";
 import InviteTab from "../components/InviteTab";
 import ChatsTab from "../components/ChatsTab";
@@ -7,7 +7,7 @@ import SocietyMembersTab from "../components/SocietyMembersTab";
 import {
   Shield, Plus, Car, Users, Bell, LogOut, Home,
   Calendar, ClipboardList, X, Trash2, AlertCircle, Clock,
-  HeartHandshake, MessageCircle, Waves, Dumbbell, Building2,
+  HeartHandshake, MessageCircle, CheckCircle, Waves, Dumbbell, Building2,
   CircleDot, Home as HomeIcon, Trophy
 } from "lucide-react";
 import { useState } from "react";
@@ -25,6 +25,7 @@ const TABS = [
   { id: "vehicles",   label: "Vehicles",    icon: Car },
   { id: "bookings",   label: "Bookings",    icon: Calendar },
   { id: "complaints", label: "Complaints",  icon: AlertCircle },
+  { id: "approvals",  label: "Approvals",   icon: CheckCircle },
   { id: "members",    label: "Members",     icon: MessageCircle },
   { id: "domestic",   label: "Help",        icon: HeartHandshake },
 ];
@@ -121,7 +122,7 @@ export default function OwnerDashboard() {
           </div>
           <div>
             <div className="font-display font-bold text-slate-900">Flat {userProfile?.flatNumber || "-"}</div>
-            <div className="text-xs text-slate-400">{userProfile?.societyCode} · {userProfile?.role}</div>
+            <div className="text-xs text-slate-400">{userProfile?.societyCode} Â· {userProfile?.role}</div>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -144,15 +145,15 @@ export default function OwnerDashboard() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
-        {success && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium">✓ {success}</div>}
-        {error   && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">⚠ {error}</div>}
+        {success && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium">âœ“ {success}</div>}
+        {error   && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">âš  {error}</div>}
 
         {/* OVERVIEW */}
         {activeTab === "overview" && (
           <div className="space-y-4">
             <div className="card">
               <h3 className="font-display font-bold text-slate-900">Welcome, {userProfile?.name}!</h3>
-              <p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} · {userProfile?.societyCode}</p>
+              <p className="text-sm text-slate-500 mt-1">Flat {userProfile?.flatNumber} Â· {userProfile?.societyCode}</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {[
@@ -308,7 +309,7 @@ export default function OwnerDashboard() {
                     </div>
                     <div className="flex-1">
                       <div className="font-display font-bold text-slate-900 tracking-wide">{v.numberPlate}</div>
-                      <div className="text-sm text-slate-500">{v.type}{v.model ? " · " + v.model : ""}{v.color ? " · " + v.color : ""}</div>
+                      <div className="text-sm text-slate-500">{v.type}{v.model ? " Â· " + v.model : ""}{v.color ? " Â· " + v.color : ""}</div>
                     </div>
                     <button onClick={() => removeVehicle(v.id)} className="p-2 hover:bg-red-50 rounded-lg text-slate-400 hover:text-red-500">
                       <Trash2 className="w-4 h-4" />
@@ -400,7 +401,7 @@ export default function OwnerDashboard() {
                             </div>
                             <div className="flex-1">
                               <div className="font-semibold text-slate-900">{b.facilityName}</div>
-                              <div className="text-sm text-slate-500">{b.date} · {b.slot}</div>
+                              <div className="text-sm text-slate-500">{b.date} Â· {b.slot}</div>
                             </div>
                             <button onClick={() => cancelBooking(b.id)} className="p-2 hover:bg-red-50 rounded-lg text-slate-400 hover:text-red-500">
                               <X className="w-4 h-4" />
@@ -433,3 +434,6 @@ export default function OwnerDashboard() {
     </div>
   );
 }
+
+
+

@@ -1,17 +1,17 @@
 /* eslint-disable no-unused-vars */
 import {
-  Shield, Users, Building2, Calendar, Bell,
-  LogOut, Menu, TrendingUp, CheckCircle, Clock, Plus, X, Trash2, MessageCircle, AlertTriangle
+  Shield, Users, Building2, Calendar,
+  LogOut, Menu, TrendingUp, CheckCircle, Clock, Plus, X, Trash2, MessageCircle, AlertTriangle, AlertCircle
 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import NotificationBell from "../components/NotificationBell";
 import { useAuth } from "../context/AuthContext";
 import { useEntries } from "../hooks/useEntries";
 import { useFacilities } from "../hooks/useFacilities";
 import ChatsTab from "../components/ChatsTab";
-import InviteTab from "../components/InviteTab";
 import ComplaintsTab from "../components/ComplaintsTab";
+import AdminMembersTab from "../components/AdminMembersTab";
+import NotificationBell from "../components/NotificationBell";
 
 const FACILITY_ICONS = {
   "Swimming Pool": "🏊", "Gym": "💪", "Banquet Hall": "🏛️",
@@ -60,7 +60,7 @@ export default function AdminDashboard() {
     { id: "facilities", label: "Facilities",   icon: Calendar },
     { id: "bookings",   label: "All Bookings", icon: Building2 },
     { id: "chats",      label: "Chats",        icon: MessageCircle },
-    { id: "complaints", label: "Complaints",   icon: AlertTriangle },
+    { id: "complaints", label: "Complaints",   icon: AlertCircle },
     { id: "members",    label: "Members",      icon: Users },
   ];
 
@@ -124,12 +124,7 @@ export default function AdminDashboard() {
               <p className="text-xs text-slate-400">{userProfile?.societyName} · {new Date().toDateString()}</p>
             </div>
           </div>
-          <button className="relative p-2 rounded-xl hover:bg-slate-100">
-            <NotificationBell />
-            {entries.filter(e => e.status === "pending").length > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            )}
-          </button>
+          <NotificationBell />
         </header>
 
         <main className="p-6">
@@ -297,8 +292,21 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* CHATS */}
+          {activeTab === "chats" && (
+            <ChatsTab />
+          )}
+
+          {/* COMPLAINTS */}
+          {activeTab === "complaints" && (
+            <ComplaintsTab userRole="admin" flatNumber={null} />
+          )}
+
           {/* MEMBERS */}
-          {activeTab === "members" && <InviteTab inviteRole="owner" />}
+          {activeTab === "members" && (
+            <AdminMembersTab />
+          )}
+
         </main>
       </div>
     </div>
