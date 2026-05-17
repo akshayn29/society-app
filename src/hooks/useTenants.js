@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { db } from "../firebase/config";
 import {
   collection, addDoc, deleteDoc, doc,
@@ -23,7 +23,7 @@ export function useTenants() {
         return {
           id: d.id,
           ...raw,
-          createdAt: raw.createdAt?.toDate?.()?.toLocaleDateString() || "—",
+          createdAt: raw.createdAt?.toDate?.()?.toLocaleDateString() || "â€”",
           leaseExpiryDate,
           leaseExpiryFormatted: leaseExpiryDate
             ? leaseExpiryDate.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })

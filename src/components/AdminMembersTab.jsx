@@ -1,4 +1,4 @@
-﻿import { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { Users, Search, Mail, Phone, Home, Shield, ChevronDown, ChevronUp, CheckCircle, XCircle } from "lucide-react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/config";

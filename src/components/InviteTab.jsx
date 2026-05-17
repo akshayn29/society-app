@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useInvites } from "../hooks/useInvites";
 import { useAuth } from "../context/AuthContext";
 import { Plus, X, Copy, Check, CheckCircle, XCircle, Clock, Mail, UserCheck, Trash2, BanIcon, CalendarClock } from "lucide-react";
@@ -128,7 +128,7 @@ export default function InviteTab({ inviteRole }) {
                 </div>
                 <div className="flex-1">
                   <div className="font-semibold text-slate-900">{u.name}</div>
-                  <div className="text-xs text-slate-500">Flat {u.flatNumber} · {u.email} · <span className="capitalize">{u.role}</span></div>
+                  <div className="text-xs text-slate-500">Flat {u.flatNumber} Â· {u.email} Â· <span className="capitalize">{u.role}</span></div>
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => approveUser(u.id)} className="p-2 rounded-xl bg-green-50 hover:bg-green-100 text-green-600 transition-all"><CheckCircle className="w-5 h-5" /></button>
@@ -151,8 +151,8 @@ export default function InviteTab({ inviteRole }) {
           </button>
         </div>
 
-        {success && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium">✓ {success}</div>}
-        {error   && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">⚠ {error}</div>}
+        {success && <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium">âœ“ {success}</div>}
+        {error   && <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium">âš  {error}</div>}
 
         {showForm && (
           <div className="card border-2 border-primary-100">
@@ -167,7 +167,7 @@ export default function InviteTab({ inviteRole }) {
                 <div>
                   <label className="block text-xs font-semibold text-slate-600 mb-1.5">
                     Lease Expiry Date
-                    <span className="ml-1 font-normal text-slate-400">(optional — leave blank for open-ended)</span>
+                    <span className="ml-1 font-normal text-slate-400">(optional â€” leave blank for open-ended)</span>
                   </label>
                   <input
                     type="date"
@@ -196,7 +196,7 @@ export default function InviteTab({ inviteRole }) {
         <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 space-y-4">
             <h4 className="font-display font-bold text-slate-900">Deactivate Invite</h4>
-            <p className="text-sm text-slate-500">This invite is accepted and cannot be deleted. Add a comment to mark it inactive — this keeps a history record.</p>
+            <p className="text-sm text-slate-500">This invite is accepted and cannot be deleted. Add a comment to mark it inactive â€” this keeps a history record.</p>
             <textarea rows={3} placeholder="Reason for deactivation e.g. Tenant vacated, lease ended..."
               value={comment} onChange={e => setComment(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-400 text-slate-800 placeholder-slate-400 text-sm resize-none" />
@@ -226,7 +226,7 @@ export default function InviteTab({ inviteRole }) {
         {loading ? (
           <div className="card text-center py-8 text-slate-400">Loading...</div>
         ) : invites.filter(i => i.role === inviteRole).length === 0 ? (
-          <div className="card text-center py-10"><div className="text-3xl mb-2">📨</div><p className="text-slate-500 text-sm">No invites sent yet.</p></div>
+          <div className="card text-center py-10"><div className="text-3xl mb-2">ðŸ“¨</div><p className="text-slate-500 text-sm">No invites sent yet.</p></div>
         ) : (
           <div className="space-y-2">
             {invites.filter(i => i.role === inviteRole).map((inv) => (

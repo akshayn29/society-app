@@ -1,4 +1,4 @@
-﻿/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */
 import DomesticHelpTab from "../components/DomesticHelpTab";
 import InviteTab from "../components/InviteTab";
 import ChatsTab from "../components/ChatsTab";
