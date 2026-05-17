@@ -13,6 +13,7 @@ export default function ChatsTab() {
   const { members, loading: membersLoading } = useMembers();
 
   const [conversations, setConversations] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [chatsLoading, setChatsLoading] = useState(true);
   const [selectedFlat, setSelectedFlat] = useState(null);
   const [selectedMember, setSelectedMember] = useState(null);
@@ -62,7 +63,7 @@ export default function ChatsTab() {
     if (conv) setSelectedMessages(conv.allMessages);
   }, [conversations, selectedFlat]);
 
-  const flatLabel = (m) => [m.wing, m.flatNumber].filter(Boolean).join('-') || m.flatNumber || 'Ã¢â‚¬â€';
+  const flatLabel = (m) => [m.wing, m.flatNumber].filter(Boolean).join('-') || m.flatNumber || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â';
 
   const handleSelectMember = (member) => {
     const flat = flatLabel(member);
@@ -129,7 +130,7 @@ export default function ChatsTab() {
   return (
     <div className="space-y-4">
 
-      {/* Mobile tab switcher Ã¢â‚¬â€ divs only, no buttons */}
+      {/* Mobile tab switcher ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â divs only, no buttons */}
       <div className="flex lg:hidden rounded-xl border border-slate-200 overflow-hidden bg-white">
         {[
           { id: 'members', label: 'Members', icon: <Users className="w-4 h-4" /> },
@@ -153,7 +154,7 @@ export default function ChatsTab() {
 
       <div className="flex gap-4 h-[600px]">
 
-        {/* LEFT Ã¢â‚¬â€ Members list */}
+        {/* LEFT ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Members list */}
         <div className={`w-full lg:w-72 flex-shrink-0 flex flex-col card p-0 overflow-hidden
           ${activePanel !== 'members' ? 'hidden lg:flex' : 'flex'}`}>
 
@@ -197,7 +198,7 @@ export default function ChatsTab() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-medium text-slate-800 truncate">{m.name || 'Ã¢â‚¬â€'}</span>
+                      <span className="text-sm font-medium text-slate-800 truncate">{m.name || 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â'}</span>
                       {hasConv && <span className="w-1.5 h-1.5 rounded-full bg-primary-500 flex-shrink-0" />}
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5">
@@ -243,7 +244,7 @@ export default function ChatsTab() {
           )}
         </div>
 
-        {/* RIGHT Ã¢â‚¬â€ Chat window */}
+        {/* RIGHT ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Chat window */}
         <div className={`flex-1 flex flex-col card p-0 overflow-hidden min-w-0
           ${activePanel !== 'chats' ? 'hidden lg:flex' : 'flex'}`}>
 
@@ -257,7 +258,7 @@ export default function ChatsTab() {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-slate-800 text-sm">{selectedMember?.name || `Flat ${selectedFlat}`}</div>
-                  <div className="text-xs text-slate-400">Flat {selectedFlat}{selectedMember?.role ? ` Ã‚Â· ${selectedMember.role}` : ''}</div>
+                  <div className="text-xs text-slate-400">Flat {selectedFlat}{selectedMember?.role ? ` Ãƒâ€šÃ‚Â· ${selectedMember.role}` : ''}</div>
                 </div>
                 <div
                   onClick={() => { setSelectedFlat(null); setSelectedMember(null); setSelectedMessages([]); setActivePanel('members'); }}
